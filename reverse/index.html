@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brazilian Portuguese Soccer Vocabulary — Reverse Teaching</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #d1d5db;
+    --accent: #1f6feb;
+    --accent-hover: #1558b0;
+    --danger: #b42318;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 18px 48px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  }
+  h1 {
+    margin-top: 0;
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+  p {
+    line-height: 1.6;
+  }
+  .muted { color: var(--muted); }
+  .hidden { display: none; }
+  .btn {
+    display: inline-block;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+  }
+  .btn:hover { background: var(--accent-hover); }
+  .btn.secondary {
+    background: #e5e7eb;
+    color: #111827;
+  }
+  .btn.secondary:hover { background: #d1d5db; }
+  .btn.danger {
+    background: var(--danger);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .progress {
+    font-size: .95rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .timer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .timer {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .timer-bar {
+    flex: 1;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .timer-fill {
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    transition: width .1s linear;
+  }
+  .word {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin: 24px 0 26px;
+    letter-spacing: .2px;
+  }
+  .options {
+    display: grid;
+    gap: 12px;
+  }
+  .option {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .option:hover {
+    border-color: var(--accent);
+    background: #f8fbff;
+  }
+  .option:disabled {
+    cursor: default;
+    opacity: .7;
+  }
+  details {
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .small {
+    font-size: .9rem;
+  }
+  .status {
+    padding: 10px 12px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    margin-top: 12px;
+  }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #f3f4f6;
+    font-weight: 700;
+    text-align: center;
+  }
+  .feedback.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <section id="intro">
+      <h1>Brazilian Portuguese Soccer Vocabulary — Reverse Teaching</h1>
+      <p>
+        This quiz has 10 questions. Each question will display an English soccer-related word or phrase and offer 4 multiple-choice options in Brazilian Portuguese.
+        Of these 4 options, please select the Brazilian Portuguese word that corresponds to the English translation shown.
+        You have 5 seconds to select your answer or it will be marked incorrect.
+        If your response is incorrect or time expires, the correct Brazilian Portuguese word will be shown before moving to the next question.
+        When you are ready, please click the “Start” button below to begin the quiz.
+      </p>
+      <div class="actions">
+        <button class="btn" id="startBtn">Start</button>
+      </div>
+
+      <details>
+        <summary>Researcher/Data Tools</summary>
+        <p class="small muted">
+          These tools are for testing and data collection. They do not change how the quiz is scored.
+        </p>
+        <div class="actions">
+          <button class="btn secondary" id="downloadAllBtn">Download All Reverse Teaching Data (CSV)</button>
+          <button class="btn secondary" id="copyAllBtnIntro">Copy All Data as CSV</button>
+          <button class="btn danger" id="resetBtn">Reset Reverse Teaching Test Data</button>
+        </div>
+        <div id="dataStatus" class="status small"></div>
+        <div id="syncStatus" class="status small">Remote data connection: ready.</div>
+      </details>
+    </section>
+
+    <section id="quiz" class="hidden">
+      <div class="progress" id="progress"></div>
+      <div class="timer-row">
+        <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+        <div class="timer"><span id="timerText">5.0</span>s</div>
+      </div>
+
+      <div class="word" id="word"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback hidden" id="feedback"></div>
+      <div class="actions hidden" id="nextActions" style="justify-content:flex-end; margin-top:24px;">
+        <button class="btn" id="nextBtn">Next</button>
+      </div>
+    </section>
+
+    <section id="complete" class="hidden">
+      <h1>Reverse Teaching Quiz Complete</h1>
+      <p>Your responses have been recorded.</p>
+      <p class="muted">Feedback is provided after each response, and the learner clicks Next to continue. No overall score is shown.</p>
+      <div class="actions">
+        <button class="btn" id="againBtn">Take Another Reverse Reverse Teaching Attempt</button>
+        <button class="btn secondary" id="downloadAttemptBtn">Download This Attempt (CSV)</button>
+        <button class="btn secondary" id="downloadAllBtn2">Download All Reverse Teaching Data (CSV)</button>
+      </div>
+      <div id="downloadFallback" class="hidden status small">
+        If your browser blocks the CSV download, use the Researcher/Data Tools below and click
+        <strong>Copy All Data as CSV</strong>, then paste it into Excel or Google Sheets.
+      </div>
+      <details>
+        <summary>Researcher/Data Tools</summary>
+        <p class="small muted">
+          If you are only testing the quiz, you can reset the stored attempts before using it for actual data collection.
+        </p>
+        <div class="actions">
+          <button class="btn secondary" id="copyAllBtn">Copy All Data as CSV</button>
+        </div>
+        <div class="actions">
+          <button class="btn danger" id="resetBtn2">Reset Reverse Teaching Test Data</button>
+        </div>
+        <div id="dataStatus2" class="status small"></div>
+        <div id="syncStatus2" class="status small">Remote data connection: ready.</div>
+      </details>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const VERSION = "Reverse Teaching";
+const STORAGE_KEY = "esn639_reverse_teaching_records_v1";
+const ATTEMPT_KEY = "esn639_reverse_teaching_attempt_counter_v1";
+const REMOTE_DATA_URL = "https://script.google.com/macros/s/AKfycbwbfi1ibPVrhXpanmKtxyih3wk5F-zW804MDgfpixgJorkv2w8YPMPP8l9JTBQtwzWG-w/exec";
+const REMOTE_QUEUE_KEY = "esn639_reverse_teaching_remote_queue_v1";
+
+const vocabulary = [
+  { pt: "campeonato", en: "championship" },
+  { pt: "partida", en: "match" },
+  { pt: "escalação", en: "lineup" },
+  { pt: "falta", en: "foul" },
+  { pt: "impedimento", en: "offside" },
+  { pt: "escanteio", en: "corner kick" },
+  { pt: "cabeceio", en: "header" },
+  { pt: "acréscimos", en: "stoppage time" },
+  { pt: "placar", en: "score" },
+  { pt: "empate", en: "tie/draw" }
+];
+
+let currentAttempt = null;
+let currentQuestions = [];
+let currentIndex = 0;
+let currentTimer = null;
+let questionStart = null;
+let currentAttemptRecords = [];
+let acceptingResponse = false;
+
+const intro = document.getElementById("intro");
+const quiz = document.getElementById("quiz");
+const complete = document.getElementById("complete");
+const progress = document.getElementById("progress");
+const wordEl = document.getElementById("word");
+const optionsEl = document.getElementById("options");
+const timerText = document.getElementById("timerText");
+const timerFill = document.getElementById("timerFill");
+const feedbackEl = document.getElementById("feedback");
+const nextActions = document.getElementById("nextActions");
+const nextBtn = document.getElementById("nextBtn");
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function loadRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function loadRemoteQueue() {
+  try {
+    return JSON.parse(localStorage.getItem(REMOTE_QUEUE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveRemoteQueue(queue) {
+  localStorage.setItem(REMOTE_QUEUE_KEY, JSON.stringify(queue));
+}
+
+function setSyncStatus(text) {
+  const a = document.getElementById("syncStatus");
+  const b = document.getElementById("syncStatus2");
+  if (a) a.textContent = text;
+  if (b) b.textContent = text;
+}
+
+async function postRecordRemote(record) {
+  // text/plain avoids a CORS preflight. Apps Script still receives the raw JSON
+  // in e.postData.contents, which the supplied doPost(e) parses.
+  await fetch(REMOTE_DATA_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(record),
+    cache: "no-store"
+  });
+}
+
+async function flushRemoteQueue() {
+  let queue = loadRemoteQueue();
+  if (!queue.length) {
+    setSyncStatus("Remote data connection: ready.");
+    return;
+  }
+
+  setSyncStatus(`Sending ${queue.length} stored trial record(s) to Google Sheets…`);
+
+  const remaining = [];
+  for (const item of queue) {
+    try {
+      await postRecordRemote(item);
+    } catch (err) {
+      remaining.push(item);
+    }
+  }
+
+  saveRemoteQueue(remaining);
+
+  if (remaining.length === 0) {
+    setSyncStatus("Remote data connection: all locally queued records sent.");
+  } else {
+    setSyncStatus(`Remote connection unavailable: ${remaining.length} record(s) safely queued on this device.`);
+  }
+}
+
+function queueAndSendRemote(record) {
+  const queue = loadRemoteQueue();
+  queue.push(record);
+  saveRemoteQueue(queue);
+
+  // Send asynchronously; local logging remains the backup source.
+  flushRemoteQueue();
+}
+
+function saveRecord(record) {
+  const all = loadRecords();
+  all.push(record);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  updateDataStatus();
+  queueAndSendRemote(record);
+}
+
+function getNextAttemptNumber() {
+  const current = parseInt(localStorage.getItem(ATTEMPT_KEY) || "0", 10);
+  const next = current + 1;
+  localStorage.setItem(ATTEMPT_KEY, String(next));
+  return next;
+}
+
+function buildQuestions() {
+  return shuffle(vocabulary).map(item => {
+    const distractors = shuffle(
+      vocabulary.filter(v => v.pt !== item.pt).map(v => v.pt)
+    ).slice(0, 3);
+
+    return {
+      pt: item.pt,
+      en: item.en,
+      correct: item.pt,
+      options: shuffle([item.pt, ...distractors])
+    };
+  });
+}
+
+function startQuiz() {
+  currentAttempt = getNextAttemptNumber();
+  currentQuestions = buildQuestions();
+  currentIndex = 0;
+  currentAttemptRecords = [];
+
+  intro.classList.add("hidden");
+  complete.classList.add("hidden");
+  quiz.classList.remove("hidden");
+
+  showQuestion();
+}
+
+function showQuestion() {
+  if (currentIndex >= currentQuestions.length) {
+    finishQuiz();
+    return;
+  }
+
+  const q = currentQuestions[currentIndex];
+  progress.textContent = `Question ${currentIndex + 1} of ${currentQuestions.length} • Reverse Teaching Attempt ${currentAttempt}`;
+  wordEl.textContent = q.en;
+  optionsEl.innerHTML = "";
+  feedbackEl.textContent = "";
+  feedbackEl.classList.add("hidden");
+  nextActions.classList.add("hidden");
+
+  q.options.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = choice;
+    btn.addEventListener("click", () => recordResponse(choice));
+    optionsEl.appendChild(btn);
+  });
+
+  acceptingResponse = true;
+  questionStart = performance.now();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(currentTimer);
+
+  const durationMs = 5000;
+
+  function tick() {
+    const elapsed = performance.now() - questionStart;
+    const remaining = Math.max(0, durationMs - elapsed);
+    timerText.textContent = (remaining / 1000).toFixed(1);
+    timerFill.style.width = `${(remaining / durationMs) * 100}%`;
+
+    if (remaining <= 0) {
+      clearInterval(currentTimer);
+      recordResponse(null);
+    }
+  }
+
+  tick();
+  currentTimer = setInterval(tick, 100);
+}
+
+function recordResponse(choice) {
+  if (!acceptingResponse) return;
+  acceptingResponse = false;
+  clearInterval(currentTimer);
+
+  [...optionsEl.querySelectorAll("button")].forEach(b => b.disabled = true);
+
+  const q = currentQuestions[currentIndex];
+  const responseTimeMs = Math.min(5000, Math.round(performance.now() - questionStart));
+  const timedOut = choice === null;
+  const correct = !timedOut && choice === q.correct;
+
+  const record = {
+    version: VERSION,
+    attempt: currentAttempt,
+    trial: currentIndex + 1,
+    portuguese_word: q.pt,
+    option_1: q.options[0],
+    option_2: q.options[1],
+    option_3: q.options[2],
+    option_4: q.options[3],
+    response: timedOut ? "TIMEOUT" : choice,
+    correct_translation: q.en,
+    result: correct ? "Correct" : "Incorrect",
+    timed_out: timedOut ? "Yes" : "No",
+    response_time_ms: responseTimeMs,
+    timestamp: new Date().toISOString()
+  };
+
+  currentAttemptRecords.push(record);
+  saveRecord(record);
+
+  if (!correct) {
+    // Teaching feedback: show only the Portuguese target word and its correct English translation.
+    feedbackEl.innerHTML = `
+      <div style="text-align:center; font-size:1.1rem; font-weight:600;">The correct translation is</div>
+      <div style="text-align:center; font-size:1.55rem; font-weight:800; margin-top:10px;">${q.en}</div>
+      <div style="text-align:center; font-size:1.35rem; font-weight:700; margin-top:8px;">${q.correct}</div>
+    `;
+    feedbackEl.classList.remove("hidden");
+    nextActions.classList.remove("hidden");
+  } else {
+    // Correct response feedback: require Next before beginning the next timed trial.
+    feedbackEl.innerHTML = `<div style="text-align:center; font-size:1.55rem; font-weight:800;">Correct!</div>`;
+    feedbackEl.classList.remove("hidden");
+    nextActions.classList.remove("hidden");
+  }
+}
+
+function finishQuiz() {
+  clearInterval(currentTimer);
+  quiz.classList.add("hidden");
+  complete.classList.remove("hidden");
+  updateDataStatus();
+}
+
+function csvEscape(value) {
+  const s = String(value ?? "");
+  return '"' + s.replaceAll('"', '""') + '"';
+}
+
+function recordsToCSV(records) {
+  const headers = [
+    "version","attempt","trial","portuguese_word",
+    "option_1","option_2","option_3","option_4",
+    "response","correct_translation","result","timed_out",
+    "response_time_ms","timestamp"
+  ];
+
+  const rows = [headers.join(",")];
+  records.forEach(r => {
+    rows.push(headers.map(h => csvEscape(r[h])).join(","));
+  });
+  return rows.join("\n");
+}
+
+function downloadCSV(records, filename) {
+  if (!records.length) {
+    alert("No reverse teaching data are stored yet.");
+    return;
+  }
+
+  const csv = "\uFEFF" + recordsToCSV(records);
+  const dataUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+
+  const a = document.createElement("a");
+  a.href = dataUri;
+  a.setAttribute("download", filename);
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  // Fallback for browsers/environments that block the download attribute.
+  setTimeout(() => {
+    const msg = document.getElementById("downloadFallback");
+    if (msg) msg.classList.remove("hidden");
+  }, 700);
+}
+
+function updateDataStatus() {
+  const records = loadRecords();
+  const attempts = [...new Set(records.map(r => r.attempt))];
+  const text = `${attempts.length} reverse teaching attempt(s) stored in this browser • ${records.length} trial record(s).`;
+  const a = document.getElementById("dataStatus");
+  const b = document.getElementById("dataStatus2");
+  if (a) a.textContent = text;
+  if (b) b.textContent = text;
+}
+
+function resetData() {
+  const ok = confirm("Reset locally stored Reverse Teaching attempts and restart the attempt counter at 1? Note: rows already sent to your Google Sheet are not deleted.");
+  if (!ok) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(ATTEMPT_KEY);
+  localStorage.removeItem(REMOTE_QUEUE_KEY);
+  currentAttemptRecords = [];
+  updateDataStatus();
+  alert("Local Reverse Teaching test data have been reset. Any rows already sent to Google Sheets remain in the Sheet.");
+}
+
+nextBtn.addEventListener("click", () => {
+  nextActions.classList.add("hidden");
+  feedbackEl.classList.add("hidden");
+  currentIndex += 1;
+  showQuestion();
+});
+
+document.getElementById("startBtn").addEventListener("click", startQuiz);
+document.getElementById("againBtn").addEventListener("click", startQuiz);
+document.getElementById("downloadAttemptBtn").addEventListener("click", () => {
+  downloadCSV(currentAttemptRecords, `reverse_teaching_attempt_${currentAttempt}.csv`);
+});
+document.getElementById("downloadAllBtn").addEventListener("click", () => {
+  downloadCSV(loadRecords(), "reverse_teaching_all_attempts.csv");
+});
+document.getElementById("downloadAllBtn2").addEventListener("click", () => {
+  downloadCSV(loadRecords(), "reverse_teaching_all_attempts.csv");
+});
+document.getElementById("resetBtn").addEventListener("click", resetData);
+document.getElementById("resetBtn2").addEventListener("click", resetData);
+
+async function copyAllData() {
+  const records = loadRecords();
+  if (!records.length) {
+    alert("No reverse teaching data are stored yet.");
+    return;
+  }
+  const csv = recordsToCSV(records);
+  try {
+    await navigator.clipboard.writeText(csv);
+    alert("All Reverse Reverse Teaching data have been copied as CSV. You can paste them directly into Excel or Google Sheets.");
+  } catch (err) {
+    const textarea = document.createElement("textarea");
+    textarea.value = csv;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+    alert("All Reverse Reverse Teaching data have been copied as CSV. You can paste them directly into Excel or Google Sheets.");
+  }
+}
+
+document.getElementById("copyAllBtn").addEventListener("click", copyAllData);
+document.getElementById("copyAllBtnIntro").addEventListener("click", copyAllData);
+
+window.addEventListener("online", flushRemoteQueue);
+updateDataStatus();
+flushRemoteQueue();
+</script>
+</body>
+</html>
